@@ -32,7 +32,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     validate_arguments!
 
     space = api.get_space(options[:space]).body
-    style space
+    style space, nat: nat(space)
   end
 
   # spaces:create NAME
@@ -66,7 +66,6 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     action("Renaming space #{options[:space]} to #{name}") do
       @space = api.patch_space(options[:space], name: name).body
     end
-    style @space
   end
 
 
@@ -84,7 +83,6 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     action("Destroying space #{options[:space]}") do
       @space = api.delete_space(options[:space]).body
     end
-    style @space
   end
 
   private
@@ -105,18 +103,32 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     exit(1)
   end
 
-  def for_display(space)
+  def nat(space)
+    return {} unless space['state'] == 'allocated'
+    api.get_space_nat(options[:space]).body  {}
+  rescue
+    {} # TODO: remove after merge of https://github.com/heroku/dogwood-control/pull/264 and https://github.com/heroku/api/pull/3950
+  end
+
+  def for_display(space, extras={})
     {
       'ID'           => space['id'],
       'Name'         => space['name'],
       'Organization' => space['organization']['name'],
       'State'        => space['state'],
       'Created At'   => time_ago(space['created_at']),
+      'Outbound IPs' => extras.fetch(:nat, {}).fetch('sources', []).join(', '),
     }
   end
 
-  def style(space)
+  def style(space, extras={})
     styled_header(space['name'])
-    styled_hash(for_display(space), ['ID', 'Organization', 'State', 'Created At'])
+    keys = []
+    keys << 'ID'
+    keys << 'Organization'
+    keys << 'State'
+    keys << 'Outbound IPs' if extras[:nat] && extras[:nat]['state'] == 'enabled'
+    keys << 'Created At'
+    styled_hash(for_display(space, extras), keys)
   end
 end
