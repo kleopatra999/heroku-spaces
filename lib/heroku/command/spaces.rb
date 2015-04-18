@@ -105,19 +105,27 @@ class Heroku::Command::Spaces < Heroku::Command::Base
 
   def nat(space)
     return {} unless space['state'] == 'allocated'
-    api.get_space_nat(options[:space]).body  {}
+    api.get_space_nat(options[:space]).body
   rescue
-    {} # TODO: remove after merge of https://github.com/heroku/dogwood-control/pull/264 and https://github.com/heroku/api/pull/3950
+    # TODO: remove after cycling pre-NAT spaces
+    output_with_bang('This space does not support Outbound IPs. Re-create this space and try again.')
+    {}
   end
 
   def for_display(space, extras={})
+    nat = extras.fetch(:nat, {})
+
     {
       'ID'           => space['id'],
       'Name'         => space['name'],
       'Organization' => space['organization']['name'],
       'State'        => space['state'],
       'Created At'   => time_ago(space['created_at']),
-      'Outbound IPs' => extras.fetch(:nat, {}).fetch('sources', []).join(', '),
+      'Outbound IPs' => if nat['state'] == 'enabled'
+                          nat['sources'].join(', ')
+                        else
+                          nat['state']
+                        end
     }
   end
 
@@ -127,7 +135,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     keys << 'ID'
     keys << 'Organization'
     keys << 'State'
-    keys << 'Outbound IPs' if extras[:nat] && extras[:nat]['state'] == 'enabled'
+    keys << 'Outbound IPs' if extras[:nat]
     keys << 'Created At'
     styled_hash(for_display(space, extras), keys)
   end
