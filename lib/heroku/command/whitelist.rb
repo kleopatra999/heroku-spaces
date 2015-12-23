@@ -32,7 +32,7 @@ class Heroku::Command::Whitelist < Heroku::Command::Base
     new_whitelist = api.put_whitelist(options[:space], whitelist).body
 
     style new_whitelist
-    display('It may take a few moments for the changes to take effect.')
+    display_delay
   end
 
   # whitelist:add --space SPACE --source SOURCE
