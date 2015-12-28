@@ -18,6 +18,7 @@ class Heroku::Command::Whitelist < Heroku::Command::Base
   # whitelist:default [allow|deny]
   #
   # sets the default action for a spaces inbound ruleset/whitelist
+  # the default action only applies to whitelist with no sources
   #
   # --space SPACE # name of space
   def default
@@ -48,10 +49,16 @@ class Heroku::Command::Whitelist < Heroku::Command::Base
 
     whitelist = api.get_whitelist(options[:space]).body
     rules = whitelist.fetch(:rules, [])
+
     exists = rules.find {|rs| rs[:source] == options[:source]}
     if exists
-      display("A rule already exists for #{options[:source]}")
+      display("A rule already exists for #{options[:source]}.")
       exit(1)
+    end
+
+    if rules.length == 0
+      display("Warning: Traffic from everywhere except #{options[:source]} will be unable to access apps in this space.")
+      return unless confirm
     end
 
     new_rule = {action: 'allow', source: options[:source]}
@@ -76,15 +83,31 @@ class Heroku::Command::Whitelist < Heroku::Command::Base
     validate_arguments!
 
     whitelist = api.get_whitelist(options[:space]).body
-    rules = whitelist.fetch(:rules, [])
-    exists = rules.delete_if {|rs| rs[:source] == options[:source]}
-    if exists
+    rules = whitelist.fetch("rules", [])
+    original_length = rules.length
+    if original_length == 0
+      display("No rules exists, nothing to do.")
+      return
+    end
+
+    rules.delete_if {|rs| rs["source"] == "#{options[:source]}"}
+    if rules.length == 0
+      default_action = whitelist["default_action"]
+      to_be_or_not = default_action == "allow" ? "be" : "not be"
+      if rules.empty?
+        display("Warning: You are removing the last whitelisted source and the default action is #{whitelist["default_action"]}.")
+        display("Traffic from any source will #{to_be_or_not} able to access the apps in this space.")
+        return unless confirm
+      end
+    end
+
+    if rules.length != original_length
       whitelist[:rules] = rules
       new_whitelist = api.put_whitelist(options[:space], whitelist).body
       style new_whitelist
       display_delay
     else
-      display("A rule already match #{options[:source]} was not found")
+      display("A rule matching #{options[:source]} was not found.")
       exit(1)
     end
   end
