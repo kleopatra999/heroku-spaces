@@ -1,3 +1,8 @@
+'use strict';
+
 exports.commands = [
-  require('./lib/commands/info')
+  require('./commands'),
+  require('./commands/create'),
+  require('./commands/info'),
+  require('./commands/rename'),
 ];
