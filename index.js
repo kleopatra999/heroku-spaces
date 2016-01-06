@@ -7,5 +7,6 @@ exports.commands = [
   require('./commands/info'),
   require('./commands/rename'),
   require('./commands/whitelist'),
+  require('./commands/whitelist/add'),
   require('./commands/whitelist/default'),
 ];

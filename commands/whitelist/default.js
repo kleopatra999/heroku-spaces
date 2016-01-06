@@ -2,40 +2,40 @@
 
 let cli = require('heroku-cli-util');
 let co  = require('co');
-let lib = require('../../lib/whitelist');
 
 function* run(context, heroku) {
-  let space = context.args.space;
+  let lib = require('../../lib/whitelist')(heroku);
+  let space = context.flags.space;
   yield cli.confirmApp(space, context.flags.confirm, `Destructive Action\nThis command will affect the space ${cli.color.bold.red(space)}`);
-  let whitelist = yield heroku.request({
-    path:    `/spaces/${space}/inbound-ruleset`,
-    headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
-  });
+  let whitelist = yield lib.getWhitelist(space);
   whitelist.default_action = context.args['[allow|deny]'];
-  whitelist = yield heroku.request({
-    method:  'PUT',
-    path:    `/spaces/${space}/inbound-ruleset`,
-    body:    whitelist,
-    headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
-  });
-  lib.display(whitelist);
+  whitelist = yield lib.putWhitelist(space, whitelist);
+  lib.displayWhitelist(whitelist);
   cli.warn('It may take a few moments for the changes to take effect.');
 }
 
 module.exports = {
   topic: 'spaces',
   command: 'whitelist:default',
-  description: 'sets the default action for a spaces inbound ruleset/whitelist',
+  description: 'sets default action',
   help: `
 The default action only applies to a whitelist with no sources.
+It may take a few moments for the changes to take effect.
 
 Example:
-  $ heroku spaces:whitelist:default my-space deny
+
+  $ heroku spaces:whitelist:default --space my-space deny
+  Source  Action
+  ──────  ──────
+  Created at:     2016-01-06T04:42:12Z
+  Created by:     jeff@heroku.com
+  Default action: deny
   `,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space'}, {name: '[allow|deny]'}],
+  args: [{name: '[allow|deny]'}],
   flags: [
+    {name: 'space', char: 's', hasValue: true, description: 'space to set default action of'},
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
   ],
   run: cli.command(co.wrap(run))

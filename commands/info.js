@@ -9,9 +9,10 @@ function displayNat (nat) {
 }
 
 function* run(context, heroku) {
-  let space = yield heroku.get(`/spaces/${context.args.space}`);
+  let spaceName = context.flags.space || context.args.space;
+  let space = yield heroku.get(`/spaces/${spaceName}`);
   if (space.state === 'allocated') {
-    space.outbound_ips = yield heroku.get(`/spaces/${context.args.space}/nat`);
+    space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`);
   }
   if (context.flags.json) {
     cli.log(JSON.stringify(space, null, 2));
@@ -33,9 +34,10 @@ module.exports = {
   command: 'info',
   description: 'show info about a space',
   needsAuth: true,
-  args: [{name: 'space'}],
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    {name: 'json', description: 'output in json format'},
+    {name: 'space', char: 's', hasValue: true, description: 'space to get info of'},
+    {name: 'json',  description: 'output in json format'},
   ],
   run: cli.command(co.wrap(run))
 };
