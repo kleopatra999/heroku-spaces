@@ -16,7 +16,7 @@
   ],
   "license": "ISC",
   "scripts": {
-    "test": "eslint ."
+    "test": "jshint . && mocha"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -24,6 +24,8 @@
     "heroku-client": "2.4.0"
   },
   "devDependencies": {
-    "eslint": "*"
+    "jshint": "*",
+    "mocha": "*",
+    "nock": "*"
   }
 }
