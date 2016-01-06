@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 
 function* run(context, heroku) {
-  let space = context.args.space || context.flags.space;
+  let space = context.flags.space || context.args.space;
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:create --space my-space --org my-org');
   let request = heroku.request({
     method: 'POST',
