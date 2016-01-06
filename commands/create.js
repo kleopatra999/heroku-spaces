@@ -4,17 +4,19 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 
 function* run(context, heroku) {
+  let space = context.args.space || context.flags.space;
+  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:create --space my-space --org my-org');
   let request = heroku.request({
     method: 'POST',
     path: '/spaces',
     body: {
-      name: context.flags.space,
+      name: space,
       organization: context.flags.org,
       channel_name: context.flags.channel,
       region: context.flags.region,
     }
   });
-  let space = yield cli.action(`Creating space ${cli.color.green(context.flags.space)} in organization ${cli.color.cyan(context.flags.org)}`, request);
+  space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.flags.org)}`, request);
   cli.styledHeader(space.name);
   cli.styledObject({
     ID:              space.id,
@@ -42,8 +44,9 @@ Example:
   `,
   needsApp: false,
   needsAuth: true,
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    {name: 'space', char: 's', required: true, hasValue: true, description: 'name of space to create'},
+    {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
     {name: 'org', char: 'o', required: true, hasValue: true, description: 'organization name'},
     {name: 'channel', hasValue: true, hidden: true},
     {name: 'region', description: 'region name'},

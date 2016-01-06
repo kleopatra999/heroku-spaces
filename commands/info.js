@@ -4,12 +4,14 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 
 function displayNat (nat) {
+  if (!nat) return;
   if (nat.state !== 'enabled') return nat.state;
   return nat.sources.join(', ');
 }
 
 function* run(context, heroku) {
   let spaceName = context.flags.space || context.args.space;
+  if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:info my-space');
   let space = yield heroku.get(`/spaces/${spaceName}`);
   if (space.state === 'allocated') {
     space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`);
