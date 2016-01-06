@@ -18,7 +18,7 @@ module.exports = {
   topic: 'spaces',
   command: 'whitelist:default',
   description: 'sets default action',
-  usage: 'spaces:whitelist:default -s my-space [allow|deny]',
+  usage: 'spaces:whitelist:default [allow|deny]',
   help: `
 The default action only applies to a whitelist with no sources.
 It may take a few moments for the changes to take effect.
