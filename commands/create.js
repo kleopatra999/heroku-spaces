@@ -31,7 +31,6 @@ module.exports = {
   description: 'create a new space',
   help: `
 Example:
-
   $ heroku spaces:create --space my-space --org my-org --region oregon
   Creating space my-space in organization my-org... done
   === my-space

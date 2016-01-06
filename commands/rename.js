@@ -20,7 +20,6 @@ module.exports = {
   description: 'renames a space',
   help: `
 Example:
-
   $ heroku spaces:rename --from old-space-name --to new-space-name
   Renaming space old-space-name to new-space-name... done
 `,

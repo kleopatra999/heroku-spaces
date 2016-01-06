@@ -23,7 +23,6 @@ The default action only applies to a whitelist with no sources.
 It may take a few moments for the changes to take effect.
 
 Example:
-
   $ heroku spaces:whitelist:default --space my-space deny
   Source  Action
   ──────  ──────

@@ -16,7 +16,6 @@ module.exports = {
   description: 'destroy a space',
   help: `
 Example:
-
   $ heroku spaces:destroy --space my-space
   Destroying my-space... done
 `,

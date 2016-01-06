@@ -18,17 +18,13 @@ function* run (context, heroku) {
 
 module.exports = {
   topic: 'spaces',
-  command: 'whitelist:add',
-  description: 'add rule to inbound whitelist',
+  command: 'whitelist:remove',
+  description: 'remove rule from inbound whitelist',
   help: `
-The default action only applies to a whitelist with no sources.
-Uses CIDR notation.
-
 Example:
-  $ heroku spaces:whitelist:add --space my-space 192.168.2.0/24
+  $ heroku spaces:whitelist:remove --space my-space 192.168.2.0/24
   Source          Action
   ──────────────  ──────
-  192.168.0.1/24  allow
   Created at:     2016-01-06T05:20:46Z
   Created by:     jeff@heroku.com
   Default action: allow
