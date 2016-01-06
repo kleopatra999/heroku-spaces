@@ -26,7 +26,13 @@ Uses CIDR notation.
 
 Example:
 
-  $ heroku spaces:whitelist:add my-space 192.168.2.0/24
+  $ heroku spaces:whitelist:add --space my-space 192.168.2.0/24
+  Source          Action
+  ──────────────  ──────
+  192.168.0.1/24  allow
+  Created at:     2016-01-06T05:20:46Z
+  Created by:     jeff@heroku.com
+  Default action: allow
   `,
   needsApp: false,
   needsAuth: true,
