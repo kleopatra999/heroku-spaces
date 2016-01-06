@@ -8,9 +8,17 @@ function* run (context, heroku) {
   let space = context.flags.space;
   let whitelist = yield lib.getWhitelist(space);
   whitelist.rules = whitelist.rules || [];
-  if (whitelist.rules.find(rs => rs.source === context.flags.source)) throw new Error(`A rule already exists for ${context.flags.source}.`);
-  if (whitelist.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from everywhere except ${cli.color.red(context.flags.source)} will be able to access apps in this space.`);
-  whitelist.rules.push({action: 'allow', source: context.flags.source});
+  if (whitelist.rules.length === 0) throw new Error('No rules exist. Nothing to do.');
+  let originalLength = whitelist.rules.length;
+  whitelist.rules = whitelist.rules.filter(r => r.source !== context.flags.source);
+  if (whitelist.rules.length === originalLength) throw new Error(`No rule matching ${context.flags.source} was found.`);
+  if (whitelist.rules.length === 0) {
+    yield cli.confirmApp(
+      space,
+      context.flags.confirm,
+      `You are removing the last whitelisted source and the default action is ${cli.color.red(whitelist.default_action)}.
+Traffic from any source will ${whitelist.default_action === 'allow' ? 'be' : 'not'} able to access the apps in this space.`);
+  }
   whitelist = yield lib.putWhitelist(space, whitelist);
   lib.displayWhitelist(whitelist);
   cli.warn('It may take a few moments for the changes to take effect.');
