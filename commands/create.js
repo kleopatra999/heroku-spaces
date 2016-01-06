@@ -1,7 +1,7 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
-let co = require('co');
+let co  = require('co');
 
 function* run(context, heroku) {
   let request = heroku.request({

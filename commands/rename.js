@@ -4,12 +4,14 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 
 function* run(context, heroku) {
+  let to   = context.flags.to;
+  let from = context.flags.from;
   let request = heroku.request({
     method:  'PATCH',
-    path:    `/spaces/${context.flags.from}`,
-    body:    {name: context.flags.to},
+    path:    `/spaces/${from}`,
+    body:    {name: to},
   });
-  yield cli.action(`Renaming space from ${cli.color.cyan(context.flags.from)} to ${cli.color.green(context.flags.to)}`, request);
+  yield cli.action(`Renaming space from ${cli.color.cyan(from)} to ${cli.color.green(to)}`, request);
 }
 
 module.exports = {

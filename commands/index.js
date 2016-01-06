@@ -26,15 +26,12 @@ function* run(context, heroku) {
     spaces = spaces.filter(s => s.organization.name === context.flags.org);
   }
   spaces = _.sortByAll(spaces, 'name');
-  if (context.flags.json) {
-    displayJSON(spaces);
-  }
+  if (context.flags.json) displayJSON(spaces);
   else if (spaces.length === 0) {
     if (context.flags.org) throw new Error(`No spaces in ${cli.color.cyan(context.flags.org)}.`);
     else throw new Error('You do not have access to any spaces.');
-  } else {
-    display(spaces);
   }
+  else display(spaces);
 }
 
 module.exports = {
