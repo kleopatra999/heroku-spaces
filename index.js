@@ -1,5 +1,10 @@
 'use strict';
 
+exports.topic = {
+  name: 'spaces',
+  description: 'manage heroku private spaces',
+};
+
 exports.commands = [
   require('./commands'),
   require('./commands/create'),
