@@ -2,21 +2,7 @@
 
 let cli = require('heroku-cli-util');
 let co  = require('co');
-
-function display (whitelist) {
-  cli.table(whitelist.rules, {
-    columns: [
-      {key: 'source', label: 'Source'},
-      {key: 'action', label: 'Action'},
-    ]
-  });
-  cli.styledObject({
-    Version: whitelist.version,
-    'Default action': whitelist.default_action,
-    'Created at': whitelist.created_at,
-    'Created by': whitelist.created_by,
-  });
-}
+let lib = require('../../lib/whitelist');
 
 function displayJSON (whitelist) {
   cli.log(JSON.stringify(whitelist, null, 2));
@@ -29,7 +15,7 @@ function* run(context, heroku) {
     headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
   });
   if (context.flags.json) displayJSON(whitelist);
-  else display(whitelist);
+  else lib.display(whitelist);
 }
 
 module.exports = {

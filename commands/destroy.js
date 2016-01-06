@@ -5,7 +5,7 @@ let co  = require('co');
 
 function* run(context, heroku) {
   let space = context.args.space;
-  yield cli.confirmApp(space, context.flags.confirm, `Destructive Action\nThis command will affect the space ${cli.color.bold.red(space)}`);
+  yield cli.confirmApp(space, context.flags.confirm, `Destructive Action\nThis command will destroy the space ${cli.color.bold.red(space)}`);
   let request = heroku.delete(`/spaces/${space}`);
   yield cli.action(`Destroying space ${cli.color.cyan(space)}`, request);
 }
