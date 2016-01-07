@@ -10,8 +10,8 @@ function* run (context, heroku) {
   whitelist.rules = whitelist.rules || [];
   if (whitelist.rules.length === 0) throw new Error('No rules exist. Nothing to do.');
   let originalLength = whitelist.rules.length;
-  whitelist.rules = whitelist.rules.filter(r => r.source !== context.flags.source);
-  if (whitelist.rules.length === originalLength) throw new Error(`No rule matching ${context.flags.source} was found.`);
+  whitelist.rules = whitelist.rules.filter(r => r.source !== context.args.source);
+  if (whitelist.rules.length === originalLength) throw new Error(`No rule matching ${context.args.source} was found.`);
   if (whitelist.rules.length === 0) {
     yield cli.confirmApp(
       space,
@@ -39,8 +39,10 @@ Example:
   `,
   needsApp: false,
   needsAuth: true,
+  args: [
+    {name: 'space'},
+  ],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to add rule to'},
     {name: 'source', hasValue: true, description: 'source of inbound requests in CIDR notation'},
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
   ],
