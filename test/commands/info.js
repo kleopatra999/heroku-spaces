@@ -15,7 +15,7 @@ describe('spaces:info', function() {
       .reply(200,
         {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now}
       );
-    return cmd.run({app: 'myapp', flags: {space: 'my-space'}})
+    return cmd.run({flags: {space: 'my-space'}})
     .then(() => expect(cli.stdout).to.equal(
 `=== my-space
 Organization: my-org

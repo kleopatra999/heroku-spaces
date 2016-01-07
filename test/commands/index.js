@@ -15,7 +15,7 @@ describe('spaces', function() {
       .reply(200, [
         {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now},
       ]);
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({flags: {}})
     .then(() => expect(cli.stdout).to.equal(
 `Name      Organization  Region     State    Created At
 ────────  ────────────  ─────────  ───────  ────────────────────────
