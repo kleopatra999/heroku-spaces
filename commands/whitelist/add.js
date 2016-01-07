@@ -8,9 +8,9 @@ function* run (context, heroku) {
   let space = context.flags.space;
   let whitelist = yield lib.getWhitelist(space);
   whitelist.rules = whitelist.rules || [];
-  if (whitelist.rules.find(rs => rs.source === context.flags.source)) throw new Error(`A rule already exists for ${context.flags.source}.`);
-  if (whitelist.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from everywhere except ${cli.color.red(context.flags.source)} will be able to access apps in this space.`);
-  whitelist.rules.push({action: 'allow', source: context.flags.source});
+  if (whitelist.rules.find(rs => rs.source === context.args.source)) throw new Error(`A rule already exists for ${context.args.source}.`);
+  if (whitelist.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from everywhere except ${cli.color.red(context.args.source)} will be able to access apps in this space.`);
+  whitelist.rules.push({action: 'allow', source: context.args.source});
   whitelist = yield lib.putWhitelist(space, whitelist);
   lib.displayWhitelist(whitelist);
   cli.warn('It may take a few moments for the changes to take effect.');
@@ -35,9 +35,11 @@ Example:
   `,
   needsApp: false,
   needsAuth: true,
+  args: [
+    {name: 'source'},
+  ],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to add rule to'},
-    {name: 'source', hasValue: true, description: 'source of inbound requests in CIDR notation'},
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
   ],
   run: cli.command(co.wrap(run))
