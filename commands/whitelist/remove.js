@@ -29,6 +29,8 @@ module.exports = {
   command: 'whitelist:remove',
   description: 'remove rule from inbound whitelist',
   help: `
+Uses CIDR notation.
+
 Example:
   $ heroku spaces:whitelist:remove --space my-space 192.168.2.0/24
   Source          Action
@@ -40,10 +42,10 @@ Example:
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'space'},
+    {name: 'source'},
   ],
   flags: [
-    {name: 'source', hasValue: true, description: 'source of inbound requests in CIDR notation'},
+    {name: 'space', hasValue: true, optional: false, description: 'space to remove rule from'},
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
   ],
   run: cli.command(co.wrap(run))
