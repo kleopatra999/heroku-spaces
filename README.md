@@ -5,4 +5,4 @@ This repository is part of a private beta product available via invitation only.
 
 ## Installation
 
-    $ heroku plugins:install https://github.com/heroku/heroku-spaces.git
+    $ heroku plugins:install heroku-spaces
