@@ -11,8 +11,8 @@ exports.commands = [
   require('./commands/destroy'),
   require('./commands/info'),
   require('./commands/rename'),
-  require('./commands/whitelist'),
-  require('./commands/whitelist/add'),
-  require('./commands/whitelist/default'),
-  require('./commands/whitelist/remove'),
+  require('./commands/inboundrules'),
+  require('./commands/inboundrules/add'),
+  require('./commands/inboundrules/default'),
+  require('./commands/inboundrules/remove'),
 ];

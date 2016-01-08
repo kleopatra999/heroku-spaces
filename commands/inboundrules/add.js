@@ -4,28 +4,28 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 
 function* run (context, heroku) {
-  let lib = require('../../lib/whitelist')(heroku);
+  let lib = require('../../lib/inboundrules')(heroku);
   let space = context.flags.space;
-  let whitelist = yield lib.getWhitelist(space);
-  whitelist.rules = whitelist.rules || [];
-  if (whitelist.rules.find(rs => rs.source === context.args.source)) throw new Error(`A rule already exists for ${context.args.source}.`);
-  if (whitelist.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from everywhere except ${cli.color.red(context.args.source)} will be able to access apps in this space.`);
-  whitelist.rules.push({action: 'allow', source: context.args.source});
-  whitelist = yield lib.putWhitelist(space, whitelist);
-  lib.displayWhitelist(whitelist);
+  let rules = yield lib.getRules(space);
+  rules.rules = rules.rules || [];
+  if (rules.rules.find(rs => rs.source === context.args.source)) throw new Error(`A rule already exists for ${context.args.source}.`);
+  if (rules.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from everywhere except ${cli.color.red(context.args.source)} will be able to access apps in this space.`);
+  rules.rules.push({action: 'allow', source: context.args.source});
+  rules = yield lib.putRules(space, rules);
+  lib.displayRules(rules);
   cli.warn('It may take a few moments for the changes to take effect.');
 }
 
 module.exports = {
   topic: 'spaces',
-  command: 'whitelist:add',
+  command: 'inboundrules:add',
   description: 'add rule to inbound whitelist',
   help: `
 The default action only applies to a whitelist with no sources.
 Uses CIDR notation.
 
 Example:
-  $ heroku spaces:whitelist:add --space my-space 192.168.2.0/24
+  $ heroku spaces:inboundrules:add --space my-space 192.168.2.0/24
   Source          Action
   ──────────────  ──────
   192.168.0.1/24  allow

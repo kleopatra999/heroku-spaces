@@ -4,27 +4,27 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 
 function* run(context, heroku) {
-  let lib = require('../../lib/whitelist')(heroku);
+  let lib = require('../../lib/inboundrules')(heroku);
   let space = context.flags.space;
   yield cli.confirmApp(space, context.flags.confirm, `Destructive Action\nThis command will affect the space ${cli.color.bold.red(space)}`);
-  let whitelist = yield lib.getWhitelist(space);
-  whitelist.default_action = context.args['default'];
-  whitelist = yield lib.putWhitelist(space, whitelist);
-  lib.displayWhitelist(whitelist);
+  let rules = yield lib.getRules(space);
+  rules.default_action = context.args['default'];
+  rules = yield lib.putRules(space, rules);
+  lib.displayRules(rules);
   cli.warn('It may take a few moments for the changes to take effect.');
 }
 
 module.exports = {
   topic: 'spaces',
-  command: 'whitelist:default',
+  command: 'inboundrules:default',
   description: 'sets default action',
-  usage: 'spaces:whitelist:default [allow|deny]',
+  usage: 'spaces:inboundrules:default [allow|deny]',
   help: `
-The default action only applies to a whitelist with no sources.
+The default action only applies to inbound rulesets with no sources.
 It may take a few moments for the changes to take effect.
 
 Example:
-  $ heroku spaces:whitelist:default --space my-space deny
+  $ heroku spaces:inboundrules:default --space my-space deny
   Source  Action
   ──────  ──────
   Created at:     2016-01-06T04:42:12Z

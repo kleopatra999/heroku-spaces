@@ -1,12 +1,12 @@
 'use strict';
 
 let nock     = require('nock');
-let cmd      = require('../../../commands/whitelist/remove');
+let cmd      = require('../../../commands/inboundrules/remove');
 
-describe('spaces:whitelist:remove', function() {
+describe('spaces:inboundrules:remove', function() {
   beforeEach(() => cli.mockConsole());
 
-  it('removes a CIDR entry from the whitelist', function() {
+  it('removes a CIDR entry from the inboundrules', function() {
     let api = nock('https://api.heroku.com:443')
     .get('/spaces/my-space/inbound-ruleset')
     .reply(200,

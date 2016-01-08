@@ -1,15 +1,15 @@
 'use strict';
 
 let nock     = require('nock');
-let cmd      = require('../../../commands/whitelist');
+let cmd      = require('../../../commands/inboundrules');
 let expect   = require('chai').expect;
 
 let now = new Date();
 
-describe('spaces:whitelist', function() {
+describe('spaces:inboundrules', function() {
   beforeEach(() => cli.mockConsole());
 
-  it('shows the whitelist', function() {
+  it('shows the inboundrules', function() {
     let api = nock('https://api.heroku.com:443')
     .get('/spaces/my-space/inbound-ruleset')
     .reply(200,
@@ -28,10 +28,9 @@ describe('spaces:whitelist', function() {
 `Source        Action
 ────────────  ──────
 127.0.0.1/20  allow
-Created at:     ${now.toISOString()}
-Created by:     dickeyxxx
-Default action: allow
-Version:        1
+Created at: ${now.toISOString()}
+Created by: dickeyxxx
+Version:    1
 `))
     .then(() => api.done());
   });
