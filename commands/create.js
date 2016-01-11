@@ -49,7 +49,7 @@ Example:
     {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
     {name: 'org', char: 'o', required: true, hasValue: true, description: 'organization name'},
     {name: 'channel', hasValue: true, hidden: true},
-    {name: 'region', description: 'region name'},
+    {name: 'region', hasValue: true, description: 'region name'},
   ],
   run: cli.command(co.wrap(run))
 };
