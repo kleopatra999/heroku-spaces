@@ -35,7 +35,7 @@ Example:
   needsAuth: true,
   args: [{name: 'default'}],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to set default action of'},
+    {name: 'space', char: 's', required: true, hasValue: true, description: 'space to set default action of'},
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
   ],
   run: cli.command(co.wrap(run))
