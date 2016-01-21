@@ -19,7 +19,7 @@ function* run (context, heroku) {
       `You are removing the last trusted IP range. Web traffic from any source will not able to access apps in this space.`);
   }
   rules = yield lib.putRules(space, rules);
-  cli.log(`Removed ${context.args.source} from trusted IP ranges on ${space}`);
+  cli.log(`Removed ${cli.color.cyan.bold(context.args.source)} from trusted IP ranges on ${cli.color.cyan.bold(space)}`);
   cli.warn('It may take a few moments for the changes to take effect.');
 }
 

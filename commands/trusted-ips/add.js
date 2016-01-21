@@ -12,7 +12,7 @@ function* run (context, heroku) {
   if (ruleset.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from ${cli.color.red(context.args.source)} will be allowed to make web requests to web dynos, all other inbound traffic denied.`);
   ruleset.rules.push({action: 'allow', source: context.args.source});
   ruleset = yield lib.putRules(space, ruleset);
-  cli.log(`Added ${context.args.source} to trusted IP ranges on ${space}`);
+  cli.log(`Added ${cli.color.cyan.bold(context.args.source)} to trusted IP ranges on ${cli.color.cyan.bold(space)}`);
   cli.warn('It may take a few moments for the changes to take effect.');
 }
 
