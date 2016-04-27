@@ -15,7 +15,7 @@ function remaining (from, to) {
 }
 
 function wait_text (deadline) {
-  let remaining_text = remaining( (new Date()).getTime(), deadline)
+  let remaining_text = remaining((new Date()).getTime(), deadline)
   return `Waiting ${remaining_text} for space... `
 }
 
@@ -26,7 +26,7 @@ function * run (context, heroku) {
 
   let now = new Date()
   let timeout = context.flags.timeout || 10
-  let deadline = new Date(now.getTime() + timeout*60*1000)
+  let deadline = new Date(now.getTime() + timeout * 60 * 1000)
 
   let spinner = new cli.Spinner({text: wait_text(deadline)})
   spinner.start()
@@ -36,13 +36,13 @@ function * run (context, heroku) {
     if ((new Date()).getTime() > deadline) {
       throw new Error('Timeout waiting for space to become allocated.')
     }
-    spinner.update(wait_text(deadline));
-    yield wait(30*1000)
+    spinner.update(wait_text(deadline))
+    yield wait(30 * 1000)
     space = yield heroku.get(`/spaces/${spaceName}`)
   }
 
   spinner.stop()
-  cli.log("Space created.")
+  cli.log('Space created.')
   space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
 
   if (context.flags.json) {
