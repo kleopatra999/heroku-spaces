@@ -16,7 +16,7 @@ function * run (context, heroku) {
     protocol: context.flags.protocol})
   ruleset = yield lib.putOutboundRules(space, ruleset)
   cli.log(`Added rule to the Outbound Rules of ${cli.color.cyan.bold(space)}`)
-  cli.warn('It may take a few moments for the changes to take effect.')
+  cli.warn('Modifying the Outbound Rules may break Add-ons for Apps in this Private Space')
 }
 
 module.exports = {
