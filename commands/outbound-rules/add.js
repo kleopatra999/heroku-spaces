@@ -6,11 +6,16 @@ let co = require('co')
 function * run (context, heroku) {
   let lib = require('../../lib/outbound-rules')(heroku)
   let space = context.flags.space
-  let ruleset = yield lib.getRules(space)
+  let ruleset = yield lib.getOutboundRules(space)
   ruleset.rules = ruleset.rules || []
-  ruleset.rules.push({action: 'allow', source: context.args.source})
-  ruleset = yield lib.putRules(space, ruleset)
-  cli.log(`Added ${cli.color.cyan.bold(context.args.source)} to trusted IP ranges on ${cli.color.cyan.bold(space)}`)
+  let ports = yield lib.parsePorts(context.flags.port)
+  ruleset.rules.push({
+    target: context.flags.dest,
+    from_port: ports[0],
+    to_port: ports[1] || ports[0],
+    protocol: context.flags.protocol})
+  ruleset = yield lib.putOutboundRules(space, ruleset)
+  cli.log(`Added rule to the Outbound Rules of ${cli.color.cyan.bold(space)}`)
   cli.warn('It may take a few moments for the changes to take effect.')
 }
 

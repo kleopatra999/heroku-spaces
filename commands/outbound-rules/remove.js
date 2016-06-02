@@ -8,10 +8,18 @@ function * run (context, heroku) {
   let space = context.flags.space
   let rules = yield lib.getOutboundRules(space)
   rules.rules = rules.rules || []
+
   if (rules.rules.length === 0) throw new Error('No Outbound Rules configured. Nothing to do.')
-  if (rules.rules.length === originalLength) throw new Error(`No IP range matching ${context.args.source} was found.`)
-  rules = yield lib.putRules(space, rules)
-  cli.log(`Removed ${cli.color.cyan.bold(context.args)} from Outbound Rules on ${cli.color.cyan.bold(space)}`)
+
+  let deleted = rules.rules.splice(context.args.source - 1, 1)[0]
+
+  yield cli.confirmApp(space, context.flags.confirm, `Destructive Action
+This will remove:
+Destination: ${deleted.target}, From Port: ${deleted.from_port}, To Port: ${deleted.to_port}, Protocol ${deleted.protocol}
+from the Outbound Rules on ${cli.color.cyan.bold(space)}
+`)
+  rules = yield lib.putOutboundRules(space, rules)
+  cli.log(`Removed Rule ${cli.color.cyan.bold(context.args.rulenumber)} from Outbound Rules on ${cli.color.cyan.bold(space)}`)
   cli.warn('It may take a few moments for the changes to take effect.')
 }
 
