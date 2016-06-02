@@ -23,11 +23,11 @@ module.exports = {
 Outbound Rules are only available on Private Spaces.
 
 Newly created spaces will have an "Allow All" rule set by default
-allowing all egress Dyno traffic outside of the space.  You can
-remove this default rule to completely stop your Private Dynos from
+allowing all egress dyno traffic outside of the space.  You can
+remove this default rule to completely stop your private dynos from
 talking to the world.
 
-You can add specific rules that only allow your Dyno to communicate with trusted hosts.
+You can add specific rules that only allow your dyno to communicate with trusted hosts.
   `,
   needsApp: false,
   needsAuth: true,

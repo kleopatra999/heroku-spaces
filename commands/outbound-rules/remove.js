@@ -11,7 +11,7 @@ function * run (context, heroku) {
 
   if (rules.rules.length === 0) throw new Error('No Outbound Rules configured. Nothing to do.')
 
-  let deleted = rules.rules.splice(context.args.rulenumber - 1, 1)[0]
+  let deleted = rules.rules.splice(context.args.ruleNumber - 1, 1)[0]
 
   yield cli.confirmApp(space, context.flags.confirm, `Destructive Action
 This will remove:
@@ -35,7 +35,7 @@ Example:
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'rulenumber'}
+    {name: 'ruleNumber'}
   ],
   flags: [
     {name: 'space', hasValue: true, optional: false, description: 'space to remove rule from'},

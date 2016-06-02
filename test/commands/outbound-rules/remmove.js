@@ -26,7 +26,7 @@ describe('outbound-rules:remove', function () {
         ]
       })
       .reply(200, {rules: []})
-    return cmd.run({args: {rulenumber: 2}, flags: {space: 'my-space', confirm: 'my-space'}})
+    return cmd.run({args: {ruleNumber: 2}, flags: {space: 'my-space', confirm: 'my-space'}})
       .then(() => api.done())
   })
 })

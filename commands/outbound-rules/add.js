@@ -24,11 +24,19 @@ module.exports = {
   command: 'add',
   description: 'Add outbound rules to a Private Space',
   help: `
-Uses CIDR notation.
+The destination flag uses CIDR notation.
 
 Example:
   $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80
   Added 192.168.0.1/24 to the outbound rules on my-space
+
+Example with port range:
+  $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80-100
+  Added 192.168.0.1/24 to the outbound rules on my-space
+
+Example opening up everything
+  $ heroku outbound-rules:add --space my-space --dest 0.0.0.0/0 --protocol any --port any
+  Added 0.0.0.0/0 to the outbound rules on my-space
   `,
   needsApp: false,
   needsAuth: true,
@@ -36,9 +44,9 @@ Example:
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to add rule to'},
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
-    {name: 'dest', hasValue: true, description: 'target CIDR block Dynos are allowed to communicate with'},
-    {name: 'protocol', hasValue: true, description: 'the protocol Dynos are allowed to use when communicating with hosts in destination CIDR block'},
-    {name: 'port', hasValue: true, description: 'the port Dynos are allowed to use when communicating with hosts in destination CIDR block'}
+    {name: 'dest', hasValue: true, description: 'target CIDR block dynos are allowed to communicate with'},
+    {name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".'},
+    {name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. The maximum port allowed for ICMP traffic is 255.'}
   ],
   run: cli.command(co.wrap(run))
 }
