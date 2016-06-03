@@ -46,7 +46,7 @@ Example opening up everything
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
     {name: 'dest', hasValue: true, description: 'target CIDR block dynos are allowed to communicate with'},
     {name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".'},
-    {name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. The maximum port allowed for ICMP traffic is 255.'}
+    {name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port allowed for ICMP traffic is 255, otherwise the maximum is 65535.'}
   ],
   run: cli.command(co.wrap(run))
 }
