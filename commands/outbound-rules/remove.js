@@ -6,6 +6,7 @@ let co = require('co')
 function * run (context, heroku) {
   let lib = require('../../lib/outbound-rules')(heroku)
   let space = context.flags.space
+  if (!space) throw new Error('Space name required.')
   let rules = yield lib.getOutboundRules(space)
   rules.rules = rules.rules || []
 
