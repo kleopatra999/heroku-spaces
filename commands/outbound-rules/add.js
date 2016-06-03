@@ -9,7 +9,7 @@ function * run (context, heroku) {
   if (!space) throw new Error('Space name required.')
   let ruleset = yield lib.getOutboundRules(space)
   ruleset.rules = ruleset.rules || []
-  let ports = yield lib.parsePorts(context.flags.port)
+  let ports = yield lib.parsePorts(context.flags.protocol, context.flags.port)
   ruleset.rules.push({
     target: context.flags.dest,
     from_port: ports[0],
