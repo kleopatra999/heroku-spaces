@@ -38,6 +38,11 @@ Example with port range:
 Example opening up everything
   $ heroku outbound-rules:add --space my-space --dest 0.0.0.0/0 --protocol any --port any
   Added 0.0.0.0/0 to the outbound rules on my-space
+
+ICMP Rules
+The ICMP protocol has types, not ports, but the underlying systems treat them as the same. For this reason,
+when you want to allow ICMP traffic you will use the --port flag to specify the ICMP types you want to
+allow. ICMP types are numbered, 0-255.
   `,
   needsApp: false,
   needsAuth: true,
@@ -47,7 +52,7 @@ Example opening up everything
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
     {name: 'dest', hasValue: true, description: 'target CIDR block dynos are allowed to communicate with'},
     {name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".'},
-    {name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port allowed for ICMP traffic is 255, otherwise the maximum is 65535.'}
+    {name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port allowed is 65535, except for ICMP with a maximum of 255.'}
   ],
   run: cli.command(co.wrap(run))
 }
