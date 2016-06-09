@@ -11,23 +11,23 @@ function * run (context, heroku) {
   if (space.state === 'allocated') {
     space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
   }
-  if (context.flags.json) {
-    cli.log(JSON.stringify(space, null, 2))
-  } else {
-    render(space)
-  }
+  render(space, context.flags)
 }
 
-function render (space) {
-  cli.styledHeader(space.name)
-  cli.styledObject({
-    ID: space.id,
-    Organization: space.organization.name,
-    Region: space.region.name,
-    State: space.state,
-    'Outbound IPs': lib.displayNat(space.outbound_ips),
-    'Created at': space.created_at
-  }, ['ID', 'Organization', 'Region', 'State', 'Outbound IPs', 'Created at'])
+function render (space, flags) {
+  if (flags.json) {
+    cli.log(JSON.stringify(space, null, 2))
+  } else {
+    cli.styledHeader(space.name)
+    cli.styledObject({
+      ID: space.id,
+      Organization: space.organization.name,
+      Region: space.region.name,
+      State: space.state,
+      'Outbound IPs': lib.displayNat(space.outbound_ips),
+      'Created at': space.created_at
+    }, ['ID', 'Organization', 'Region', 'State', 'Outbound IPs', 'Created at'])
+  }
 }
 
 module.exports = {

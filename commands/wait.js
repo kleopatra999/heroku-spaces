@@ -6,30 +6,27 @@ let info = require('./info')
 let wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 function * run (context, heroku) {
-  let spaceName = context.flags.space || context.args.space
+  const spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:wait my-space')
 
-  let now = new Date()
-  let timeout = context.flags.timeout || 10
-  let deadline = new Date(now.getTime() + timeout * 60 * 1000)
+  const interval = (typeof context.flags.interval !== 'undefined' ? context.flags.interval : 30) * 1000
+  const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 10 * 60) * 1000
+  const deadline = new Date(new Date().getTime() + timeout)
+  const spinner = new cli.Spinner({text: `Waiting for space ${cli.color.green(spaceName)} to allocate...`})
 
-  let spinner = new cli.Spinner({text: `Waiting for space ${cli.color.green(spaceName)} to allocate...`})
   spinner.start()
-
   let space = yield heroku.get(`/spaces/${spaceName}`)
-  while (space.state !== 'allocated') {
-    if ((new Date()).getTime() > deadline) {
+  while (space.state === 'allocating') {
+    if ((new Date()).getTime() >= deadline) {
       throw new Error('Timeout waiting for space to become allocated.')
     }
-    yield wait(30 * 1000)
+    yield wait(interval)
     space = yield heroku.get(`/spaces/${spaceName}`)
   }
   space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
+  spinner.stop('done\n')
 
-  spinner.stop('done')
-
-  cli.log()
-  info.render(space)
+  info.render(space, context.flags)
 }
 
 module.exports = {
@@ -41,7 +38,8 @@ module.exports = {
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to get info of'},
     {name: 'json', description: 'output in json format'},
-    {name: 'timeout', char: 't', hasValue: true, description: 'maximum number of minutes to wait'}
+    {name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals'},
+    {name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait'}
   ],
   run: cli.command(co.wrap(run))
 }
