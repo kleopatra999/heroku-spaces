@@ -6,7 +6,6 @@ let info = require('./info')
 let wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 function * run (context, heroku) {
-  let lib = require('../lib/spaces')()
   let spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:wait my-space')
 

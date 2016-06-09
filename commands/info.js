@@ -18,7 +18,7 @@ function * run (context, heroku) {
   }
 }
 
-function render(space) {
+function render (space) {
   cli.styledHeader(space.name)
   cli.styledObject({
     ID: space.id,
